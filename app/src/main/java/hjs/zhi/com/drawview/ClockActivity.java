@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,11 @@ import android.widget.ImageView;
 
 import java.util.Calendar;
 
+/**
+ * 优化方案：
+ * 表盘课绘制一次
+ * 在分线程中进行加载
+ */
 public class ClockActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btnStart, btnStop;
     private ImageView mClockImageView;
@@ -23,6 +29,8 @@ public class ClockActivity extends AppCompatActivity implements View.OnClickList
     private int mHour, mMinute, mSecond;
     private float mDegrees;
     private float length;
+
+    private boolean mIsRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +119,7 @@ public class ClockActivity extends AppCompatActivity implements View.OnClickList
 
         //画分钟指针
         paint.setStrokeWidth(2);
-        mDegrees = mHour * 6;
+        mDegrees = mSecond * 6;
         length = (width / 2) * 0.92f;
         canvas.save();
         canvas.rotate(mDegrees, width / 2, height / 2);
@@ -125,9 +133,42 @@ public class ClockActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_start:
+                mIsRunning = true;
+                new ClockTask().execute("");
                 break;
             case R.id.btn_stop:
+                mIsRunning = false;
                 break;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mIsRunning = false;
+    }
+
+    private class ClockTask extends AsyncTask<Object, Object, Object> {
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            while (mIsRunning) {
+                publishProgress("");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Object... values) {
+            super.onProgressUpdate(values);
+            mClockImageView.setImageBitmap(drawClock());
+        }
+    }
+
+
 }

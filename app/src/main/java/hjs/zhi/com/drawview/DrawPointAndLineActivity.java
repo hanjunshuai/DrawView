@@ -25,7 +25,24 @@ public class DrawPointAndLineActivity extends AppCompatActivity {
     }
 
     private void doDrawLine() {
+        Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, mConfig);
 
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.parseColor("#666666"));
+
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(2);
+
+        float[] pts = new float[]{
+                10, 10, mWidth - 10, 10,
+                mWidth - 10, 10, mWidth - 10, mHeight - 10,
+                mWidth - 10, mHeight - 10, 10, mHeight - 10,
+                10, 10, 10, mHeight - 10,
+        };
+        canvas.drawLines(pts, 0, pts.length, paint);
+
+        mLineImageView.setImageBitmap(bitmap);
     }
 
     Bitmap.Config mConfig = Bitmap.Config.ARGB_8888;
@@ -44,7 +61,7 @@ public class DrawPointAndLineActivity extends AppCompatActivity {
         paint.setStrokeWidth(5);
 
         float[] pts = new float[]{
-                20, 40,
+                20, 20,
                 40, 40,
                 60, 60,
                 80, 80,

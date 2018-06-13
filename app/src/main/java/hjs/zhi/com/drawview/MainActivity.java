@@ -10,7 +10,10 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+
+import hjs.zhi.com.drawview.widget.PetalButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +26,14 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.image);
         imageView.setImageBitmap(getBitmap());
+
+        PetalButton btn = findViewById(R.id.btn_pp);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private Bitmap getBitmap() {
